@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "984963912709",
+    "project_id": "beierapp2-99052",
+    "storage_bucket": "beierapp2-99052.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:984963912709:android:45e8135d15822b7d72386c",
+        "android_client_info": {
+          "package_name": "com.example.beier_app2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAKNHuWshEXzBcr_P7lLnxVaB8hHu5jnEQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
