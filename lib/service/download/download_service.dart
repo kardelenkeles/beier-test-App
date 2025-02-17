@@ -39,16 +39,21 @@ class DownloadService {
     }
   }
 
-  // Future<void> sharePdf(String filePath) async {
-  //   await Share.shareFiles([filePath], text: "Test sonuçlarım!");
-  // }
-  //
-  // Future<void> shareViaEmail(String filePath) async {
-  //   await Share.shareFiles([filePath], subject: "Test Sonuçları");
-  // }
-  //
-  // Future<void> shareViaWhatsApp(String filePath) async {
-  //   await Share.shareFiles([filePath],
-  //       text: "WhatsApp'tan paylaşmak için tıklayın!");
-  // }
+  Future<void> sharePdf(String filePath) async {
+    await Share.shareXFiles([XFile(filePath)], text: 'Here is a sample PDF!');
+  }
+
+  Future<void> shareViaEmail(String filePath) async {
+    await Share.shareXFiles([XFile(filePath)], text: 'Here is a sample PDF!');
+  }
+
+  Future<void> shareViaWhatsApp(String filePath) async {
+    await Share.shareXFiles([XFile(filePath)],
+        text: "WhatsApp'tan paylaşmak için tıklayın!");
+  }
+
+  Future<void> downloadPdf(String filePath) async {
+    await Share.shareXFiles([XFile(filePath)], text: 'Here is a sample PDF!');
+  }
+
 }

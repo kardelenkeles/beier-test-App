@@ -12,7 +12,7 @@ class QuestionService {
         Map<String, dynamic>? data =
             docSnapshot.data() as Map<String, dynamic>?;
 
-        if (data != null && data.containsKey('questions')) {
+        if (data != null) {
           List<dynamic> questionList = data['questions'];
           return questionList.cast<String>();
         }

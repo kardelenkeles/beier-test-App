@@ -28,21 +28,21 @@ class DownloadViewModel extends ChangeNotifier {
     }
   }
 
-  // Future<void> sharePdf() async {
-  //   if (_pdfPath != null) {
-  //     await _downloadService.sharePdf(_pdfPath!);
-  //   }
-  // }
-  //
-  // Future<void> shareViaEmail() async {
-  //   if (_pdfPath != null) {
-  //     await _downloadService.shareViaEmail(_pdfPath!);
-  //   }
-  // }
-  //
-  // Future<void> shareViaWhatsApp() async {
-  //   if (_pdfPath != null) {
-  //     await _downloadService.shareViaWhatsApp(_pdfPath!);
-  //   }
-  // }
+  Future<void> sharePdf() async {
+    if (_pdfPath != null) {
+      await _downloadService.sharePdf(_pdfPath!);
+    }
+  }
+
+  Future<void> shareViaEmail() async {
+    if (_pdfPath != null) {
+      await _downloadService.shareViaEmail(_pdfPath!);
+    }
+  }
+
+  Future<void> shareViaWhatsApp() async {
+    if (_pdfPath != null) {
+      await _downloadService.shareViaWhatsApp(_pdfPath!);
+    }
+  }
 }

@@ -46,7 +46,7 @@ class _DownloadPageState extends State<DownloadPage> {
                       SizedBox(height: 20),
                       ElevatedButton.icon(
                         onPressed: () {
-                          // downloadViewModel.sharePdf();
+                          downloadViewModel.sharePdf();
                         },
                         icon: Icon(Icons.share),
                         label: Text("Paylaş"),
@@ -54,7 +54,7 @@ class _DownloadPageState extends State<DownloadPage> {
                       SizedBox(height: 10),
                       ElevatedButton.icon(
                         onPressed: () {
-                          // downloadViewModel.shareViaEmail();
+                          downloadViewModel.shareViaEmail();
                         },
                         icon: Icon(Icons.email),
                         label: Text("E-posta ile Gönder"),
@@ -62,7 +62,7 @@ class _DownloadPageState extends State<DownloadPage> {
                       SizedBox(height: 10),
                       ElevatedButton.icon(
                         onPressed: () {
-                          // downloadViewModel.shareViaWhatsApp();
+                          downloadViewModel.shareViaWhatsApp();
                         },
                         icon: Icon(Icons.message),
                         label: Text("WhatsApp ile Gönder"),
