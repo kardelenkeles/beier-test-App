@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:auto_route/annotations.dart';
 import 'package:beier_app2/view/answer/answer_viewmodel.dart';
 import 'package:beier_app2/view/download/download_page.dart';
@@ -14,12 +16,28 @@ class QuestionPage extends StatefulWidget {
 
 class _QuestionPageState extends State<QuestionPage> {
   final TextEditingController _textController = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
   bool _isTestCompleted = false;
+  bool _isTextFieldFocused = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _focusNode.addListener(_onFocusChange);
+  }
 
   @override
   void dispose() {
     _textController.dispose();
+    _focusNode.removeListener(_onFocusChange);
+    _focusNode.dispose();
     super.dispose();
+  }
+
+  void _onFocusChange() {
+    setState(() {
+      _isTextFieldFocused = _focusNode.hasFocus;
+    });
   }
 
   @override
@@ -34,7 +52,7 @@ class _QuestionPageState extends State<QuestionPage> {
     if (_textController.text.isEmpty) {
       final currentQuestion = questionViewModel.currentQuestion;
       final userAnswer = answerViewModel.answers.firstWhere(
-        (answer) => answer['question'] == currentQuestion,
+            (answer) => answer['question'] == currentQuestion,
         orElse: () => {},
       );
       if (userAnswer.isNotEmpty) {
@@ -44,94 +62,143 @@ class _QuestionPageState extends State<QuestionPage> {
 
     return Scaffold(
       appBar: AppBar(title: Text("Soru Cevap")),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: Stack(
           children: [
-            Text(
-              questionViewModel.currentQuestion.isNotEmpty
-                  ? questionViewModel.currentQuestion
-                  : "Yükleniyor...",
-              style: TextStyle(fontSize: 20),
-              textAlign: TextAlign.center,
+            Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage("assets/Notebook_BlankPages_Page_1.png"),
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
-            SizedBox(height: 20),
-            TextField(
-              controller: _textController,
-              decoration: InputDecoration(
-                labelText: "Cevabınızı yazın",
-                border: OutlineInputBorder(),
+            if (_isTextFieldFocused)
+              BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                child: Container(
+                  color: Colors.black.withOpacity(0.3),
+                ),
               ),
-              onChanged: (value) {
-                answerViewModel.addOrUpdateAnswer(
-                  questionViewModel.currentQuestion,
-                  value,
-                );
-              },
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    questionViewModel.currentQuestion.isNotEmpty
+                        ? questionViewModel.currentQuestion
+                        : "Yükleniyor...",
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 20),
+                  GestureDetector(
+                    onTap: () {
+                      FocusScope.of(context).requestFocus(_focusNode);
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                        color: _isTextFieldFocused
+                            ? Colors.white.withOpacity(0.9)
+                            : Colors.white.withOpacity(0.8),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: TextField(
+                        controller: _textController,
+                        focusNode: _focusNode,
+                        decoration: InputDecoration(
+                          labelText: "Cevabınızı yazın",
+                          border: InputBorder.none,
+                        ),
+                        onChanged: (value) {
+                          answerViewModel.addOrUpdateAnswer(
+                            questionViewModel.currentQuestion,
+                            value,
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  SpeechToTextWidget(
+                    onResult: (String recognizedText) {
+                      _textController.text = recognizedText;
+                      answerViewModel.addOrUpdateAnswer(
+                        questionViewModel.currentQuestion,
+                        recognizedText,
+                      );
+                    },
+                  ),
+                  SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      if (!isFirstQuestion)
+                        ElevatedButton(
+                          onPressed: () {
+                            answerViewModel.addOrUpdateAnswer(
+                              questionViewModel.currentQuestion,
+                              _textController.text,
+                            );
+                            questionViewModel.previousQuestion();
+                            _textController.clear();
+                          },
+                          child: Text("Önceki Soru"),
+                        ),
+                      if (!isLastQuestion)
+                        ElevatedButton(
+                          onPressed: () {
+                            answerViewModel.addOrUpdateAnswer(
+                              questionViewModel.currentQuestion,
+                              _textController.text,
+                            );
+                            questionViewModel.nextQuestion();
+                            _textController.clear();
+                          },
+                          child: Text("Sonraki Soru"),
+                        ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  if (_isTestCompleted)
+                    Text(
+                      "Cevaplar gönderildi!",
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green),
+                    )
+                  else if (isLastQuestion)
+                    ElevatedButton(
+                      onPressed: () async {
+                        answerViewModel.addOrUpdateAnswer(
+                          questionViewModel.currentQuestion,
+                          _textController.text,
+                        );
+                        await answerViewModel.completeTest('test1');
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => DownloadPage()),
+                        );
+                        setState(() {
+                          _isTestCompleted = true;
+                        });
+                      },
+                      child: Text("Testi Bitir"),
+                    ),
+                ],
+              ),
             ),
-            SizedBox(height: 20),
-            SpeechToTextWidget(
-              onResult: (String recognizedText) {
-                _textController.text = recognizedText;
-                answerViewModel.addOrUpdateAnswer(
-                  questionViewModel.currentQuestion,
-                  recognizedText,
-                );
-              },
-            ),
-            SizedBox(height: 20),
-            if (!isFirstQuestion)
-              ElevatedButton(
-                onPressed: () {
-                  answerViewModel.addOrUpdateAnswer(
-                    questionViewModel.currentQuestion,
-                    _textController.text,
-                  );
-                  questionViewModel.previousQuestion();
-                  _textController.clear();
-                },
-                child: Text("Önceki Soru"),
-              ),
-            if (!isLastQuestion)
-              ElevatedButton(
-                onPressed: () {
-                  answerViewModel.addOrUpdateAnswer(
-                    questionViewModel.currentQuestion,
-                    _textController.text,
-                  );
-                  questionViewModel.nextQuestion();
-                  _textController.clear();
-                },
-                child: Text("Sonraki Soru"),
-              ),
-            SizedBox(height: 20),
-            if (_isTestCompleted)
-              Text(
-                "Cevaplar gönderildi!",
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.green),
-              )
-            else if (isLastQuestion)
-              ElevatedButton(
-                onPressed: () async {
-                  answerViewModel.addOrUpdateAnswer(
-                    questionViewModel.currentQuestion,
-                    _textController.text,
-                  );
-                  await answerViewModel.completeTest('test1');
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => DownloadPage()),
-                  );
-                  setState(() {
-                    _isTestCompleted = true;
-                  });
-                },
-                child: Text("Testi Bitir"),
-              ),
           ],
         ),
       ),

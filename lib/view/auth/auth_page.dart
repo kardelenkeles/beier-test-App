@@ -18,14 +18,20 @@ class _AuthPageState extends State<AuthPage> {
   bool _isLogin = false;
   bool _isLoading = false;
 
-  static const Color primaryColor = Color(0xffBAE162);
+  // Renk paleti
+  static const Color primaryColor = Color(0xFFE94F37); // Turuncu-kırmızı
+  static const Color backgroundColor = Color(0xFFF6F7EB); // Açık renk
+  static const Color textColor = Color(0xFF393E41); // Koyu gri
 
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
+      backgroundColor: backgroundColor, // Arka plan rengi
       navigationBar: CupertinoNavigationBar(
+        backgroundColor: primaryColor, // AppBar arka plan rengi
         middle: Text(
           _isLogin ? AppConstants.welcomeText : AppConstants.registerText,
+          style: TextStyle(color: backgroundColor), // Metin rengi
         ),
       ),
       child: Center(
@@ -54,32 +60,36 @@ class _AuthPageState extends State<AuthPage> {
                         CupertinoTextField(
                           controller: _emailController,
                           placeholder: AppConstants.emailHint,
+                          placeholderStyle: TextStyle(color: textColor.withOpacity(0.5)),
                           prefix: Padding(
                             padding: const EdgeInsets.only(left: 8.0),
-                            child: Icon(CupertinoIcons.mail),
+                            child: Icon(CupertinoIcons.mail, color: textColor),
                           ),
-                          padding: EdgeInsets.symmetric(
-                              vertical: 18, horizontal: 16),
+                          padding: EdgeInsets.symmetric(vertical: 18, horizontal: 16),
                           decoration: BoxDecoration(
+                            color: backgroundColor,
                             borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: CupertinoColors.systemGrey),
+                            border: Border.all(color: textColor.withOpacity(0.3)),
                           ),
+                          style: TextStyle(color: textColor),
                         ),
                         SizedBox(height: 20),
                         CupertinoTextField(
                           controller: _passwordController,
                           placeholder: AppConstants.passwordHint,
+                          placeholderStyle: TextStyle(color: textColor.withOpacity(0.5)),
                           obscureText: true,
                           prefix: Padding(
                             padding: const EdgeInsets.only(left: 8.0),
-                            child: Icon(CupertinoIcons.lock),
+                            child: Icon(CupertinoIcons.lock, color: textColor),
                           ),
-                          padding: EdgeInsets.symmetric(
-                              vertical: 18, horizontal: 16),
+                          padding: EdgeInsets.symmetric(vertical: 18, horizontal: 16),
                           decoration: BoxDecoration(
+                            color: backgroundColor,
                             borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: CupertinoColors.systemGrey),
+                            border: Border.all(color: textColor.withOpacity(0.3)),
                           ),
+                          style: TextStyle(color: textColor),
                         ),
                         SizedBox(height: 20),
                         _isLoading
@@ -91,9 +101,7 @@ class _AuthPageState extends State<AuthPage> {
                           fit: BoxFit.cover,
                         )
                             : CupertinoButton(
-                          color: _isLogin
-                              ? CupertinoColors.activeBlue
-                              : primaryColor,
+                          color: primaryColor, // Buton rengi
                           borderRadius: BorderRadius.circular(10),
                           onPressed: () async {
                             if (_formKey.currentState!.validate()) {
@@ -130,7 +138,7 @@ class _AuthPageState extends State<AuthPage> {
                                 : AppConstants.registerButtonText,
                             style: TextStyle(
                               fontSize: 18,
-                              color: CupertinoColors.white,
+                              color: backgroundColor, // Buton metin rengi
                             ),
                           ),
                         ),
@@ -148,7 +156,7 @@ class _AuthPageState extends State<AuthPage> {
                       _isLogin
                           ? AppConstants.noAccountText
                           : AppConstants.haveAccountText,
-                      style: TextStyle(color: CupertinoColors.activeBlue),
+                      style: TextStyle(color: primaryColor), // Metin rengi
                     ),
                   ),
                   SizedBox(height: 20),
@@ -158,7 +166,7 @@ class _AuthPageState extends State<AuthPage> {
                     },
                     child: Text(
                       AppConstants.continueWithoutLogin,
-                      style: TextStyle(color: CupertinoColors.systemGrey),
+                      style: TextStyle(color: textColor), // Metin rengi
                     ),
                   ),
                 ],

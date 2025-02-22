@@ -72,7 +72,9 @@ flutter:
   assets:
     - assets/animations/lottie-login-animation.json
     - assets/animations/lottie-register-animation.json
-
+    - assets/Notebook_BlankPages_Page_1.png
+    - assets/il_570xN.3013619958_nxnb.avif
+    - assets/c3f09d07fc994934f5d4958ae51d4dfa.jpg
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
