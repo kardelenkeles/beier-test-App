@@ -88,17 +88,35 @@ class _QuestionPageState extends State<QuestionPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    questionViewModel.currentQuestion.isNotEmpty
-                        ? questionViewModel.currentQuestion
-                        : "Yükleniyor...",
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
+                  AnimatedSwitcher(
+                    duration: Duration(milliseconds: 600),
+                    switchInCurve: Curves.elasticOut,
+                    switchOutCurve: Curves.easeIn,
+                    transitionBuilder: (Widget child, Animation<double> animation) {
+                      return FadeTransition(
+                        opacity: animation,
+                        child: ScaleTransition(
+                          scale: Tween<double>(begin: 0.8, end: 1.0).animate(animation),
+                          child: child,
+                        ),
+                      );
+                    },
+                    child: Text(
+                      questionViewModel.currentQuestion.isNotEmpty
+                          ? questionViewModel.currentQuestion
+                          : "Yükleniyor...",
+                      key: ValueKey(questionViewModel.currentQuestion),
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                    textAlign: TextAlign.center,
                   ),
+
+
+
                   SizedBox(height: 20),
                   GestureDetector(
                     onTap: () {
